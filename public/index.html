@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="utf-8" />
+
+  <!-- ==========================================
+       SC Academy Favicon
+  =========================================== -->
+  <link
+    rel="icon"
+    type="image/png"
+    href="%PUBLIC_URL%/favicon.png"
+  />
+
+  <link
+    rel="shortcut icon"
+    type="image/png"
+    href="%PUBLIC_URL%/favicon.png"
+  />
+
+  <link
+    rel="apple-touch-icon"
+    href="%PUBLIC_URL%/favicon.png"
+  />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <meta
+    name="theme-color"
+    content="#1a365d"
+  />
+
+  <meta
+    name="description"
+    content="SC Academy - Building Knowledge, Skills & Future Leaders"
+  />
+
+  <title>SC Academy</title>
+
+  <!-- ==========================================
+       Tailwind CSS
+  =========================================== -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ==========================================
+       Google Fonts: Inter & Kantumruy Pro
+  =========================================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- ==========================================
+       Font Awesome CDN
+  =========================================== -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #1a365d;
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2a4a7f;
+    }
+
+    .hero-gradient {
+      background: linear-gradient(
+        135deg,
+        #1a365d 0%,
+        #2a4a7f 50%,
+        #1a365d 100%
+      );
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-up {
+      animation: slideUp 0.6s ease-out;
+    }
+
+    .hover-lift {
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="root"></div>
+
+  <script>
+    // ==========================================
+    // Disable Right Click
+    // ==========================================
+    document.addEventListener("contextmenu", function (event) {
+      event.preventDefault();
+    });
+
+
+    // ==========================================
+    // Block common DevTools shortcuts
+    // NOTE: This is only a deterrent.
+    // It cannot truly disable browser DevTools.
+    // ==========================================
+    document.addEventListener("keydown", function (event) {
+
+      // F12
+      if (event.key === "F12") {
+        event.preventDefault();
+        return false;
+      }
+
+
+      // Ctrl + Shift + I
+      if (
+        event.ctrlKey &&
+        event.shiftKey &&
+        event.key.toLowerCase() === "i"
+      ) {
+        event.preventDefault();
+        return false;
+      }
+
+
+      // Ctrl + Shift + J
+      if (
+        event.ctrlKey &&
+        event.shiftKey &&
+        event.key.toLowerCase() === "j"
+      ) {
+        event.preventDefault();
+        return false;
+      }
+
+
+      // Ctrl + Shift + C
+      if (
+        event.ctrlKey &&
+        event.shiftKey &&
+        event.key.toLowerCase() === "c"
+      ) {
+        event.preventDefault();
+        return false;
+      }
+
+
+      // Ctrl + U - View Source
+      if (
+        event.ctrlKey &&
+        event.key.toLowerCase() === "u"
+      ) {
+        event.preventDefault();
+        return false;
+      }
+    });
+  </script>
+
+</body>
+</html>
