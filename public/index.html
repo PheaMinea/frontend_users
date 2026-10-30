@@ -41,9 +41,25 @@
   <title>SC Academy</title>
 
   <!-- ==========================================
-       Tailwind CSS
+       THEME: apply saved preference BEFORE first paint.
+       Tailwind's darkMode is class-based, so the .dark class
+       must be present on <html> before the stylesheet renders.
+       (Do NOT load the Tailwind Play CDN here: it defaults to
+       media-query dark mode, which ignores this class and makes
+       the Light/Dark toggle appear broken in production.)
   =========================================== -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("sc_academy_theme");
+        if (t !== "dark" && t !== "light") t = "light";
+        var d = document.documentElement;
+        d.classList.toggle("dark", t === "dark");
+        d.classList.toggle("light", t === "light");
+        d.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
 
   <!-- ==========================================
        Google Fonts: Inter & Kantumruy Pro
