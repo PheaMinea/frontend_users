@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -21,10 +21,10 @@ const CourseDetail = () => {
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState("");
 
-  const tr = (key, english, khmer) => {
+  const tr = useCallback((key, english, khmer) => {
     const value = t(key);
     return (value && value !== key) ? value : (isKhmer ? khmer : english);
-  };
+  }, [t, isKhmer]);
 
   const localized = (item, field, defaultValue = "") => {
     if (!item) return defaultValue;
@@ -66,14 +66,14 @@ const CourseDetail = () => {
         ""
       );
     }
-    return typeof str === "string" ? str.replace(/^[•\-\*\u2022\u2713\u2714\d+\.\)]\s*/, "").trim() : str;
+    return typeof str === "string" ? str.replace(/^[-*•\u2022\u2713\u2714\d+.)]\s*/, "").trim() : str;
   };
 
-  const toArray = (value) => {
+  const toArray = useCallback((value) => {
     if (!value) return [];
     if (Array.isArray(value)) {
       return value
-        .map((item) => (typeof item === "string" ? item.replace(/^[•\-\*\u2022\u2713\u2714\d+\.\)]\s*/, "").trim() : item))
+        .map((item) => (typeof item === "string" ? item.replace(/^[-*•\u2022\u2713\u2714\d+.)]\s*/, "").trim() : item))
         .filter(Boolean);
     }
     if (typeof value === "string") {
@@ -83,7 +83,7 @@ const CourseDetail = () => {
         const parsed = JSON.parse(trimmed);
         if (Array.isArray(parsed)) {
           return parsed
-            .map((item) => (typeof item === "string" ? item.replace(/^[•\-\*\u2022\u2713\u2714\d+\.\)]\s*/, "").trim() : item))
+            .map((item) => (typeof item === "string" ? item.replace(/^[-*•\u2022\u2713\u2714\d+.)]\s*/, "").trim() : item))
             .filter(Boolean);
         }
       } catch {
@@ -91,14 +91,14 @@ const CourseDetail = () => {
         const separator = trimmed.includes("\n") ? /\r?\n/ : /,/;
         return trimmed
           .split(separator)
-          .map((item) => item.replace(/^[•\-\*\u2022\u2713\u2714\d+\.\)]\s*/, "").trim())
+          .map((item) => item.replace(/^[-*•\u2022\u2713\u2714\d+.)]\s*/, "").trim())
           .filter(Boolean);
       }
     }
     return [];
-  };
+  }, []);
 
-  const getLocalizedArray = (item, field) => {
+  const getLocalizedArray = useCallback((item, field) => {
     if (!item) return [];
     const selected = item[`${field}_${language}`];
     if (selected && toArray(selected).length > 0) return toArray(selected);
@@ -113,7 +113,7 @@ const CourseDetail = () => {
     if (km && toArray(km).length > 0) return toArray(km);
 
     return [];
-  };
+  }, [language, toArray]);
 
   const courseImage = course?.image_url || course?.image || course?.thumbnail || "";
   const courseTitle = localized(course, "title", tr("courseDetail.defaultTitle", "SC Academy Program", "វគ្គសិក្សា SC Academy"));
@@ -130,15 +130,15 @@ const CourseDetail = () => {
     const list = getLocalizedArray(course, "what_you_learn");
     if (list.length > 0) return list;
     return getLocalizedArray(course, "features");
-  }, [course, language]);
+  }, [course, getLocalizedArray]);
 
-  const requirements = useMemo(() => getLocalizedArray(course, "requirements"), [course, language]);
+  const requirements = useMemo(() => getLocalizedArray(course, "requirements"), [course, getLocalizedArray]);
 
   const targetAudience = useMemo(() => {
     const list = getLocalizedArray(course, "target_students");
     if (list.length > 0) return list;
     return getLocalizedArray(course, "target_audience");
-  }, [course, language]);
+  }, [course, getLocalizedArray]);
 
   const descriptionLines = useMemo(() => {
     if (!courseDescription) return [];
@@ -149,7 +149,7 @@ const CourseDetail = () => {
       .filter(Boolean);
   }, [courseDescription]);
 
-  const curriculum = useMemo(() => getLocalizedArray(course, "curriculum"), [course, language]);
+  const curriculum = useMemo(() => getLocalizedArray(course, "curriculum"), [course, getLocalizedArray]);
 
   useEffect(() => {
     const fetchCourseDetail = async () => {
@@ -181,7 +181,7 @@ const CourseDetail = () => {
       }
     };
     if (id) fetchCourseDetail();
-  }, [id, language]);
+  }, [id, language, tr]);
 
   const openTelegramEnroll = () => {
     const title = courseTitle || "SC Academy Program";
@@ -328,7 +328,7 @@ const CourseDetail = () => {
                       </h2>
                       <div className="space-y-4 text-slate-700 dark:text-slate-300">
                         {descriptionLines.map((line, index) => {
-                          const cleanText = line.replace(/^[•\-\*\u2022\u2713\u2714\d+\.\)]\s*/, "").trim();
+                          const cleanText = line.replace(/^[-*•\u2022\u2713\u2714\d+.)]\s*/, "").trim();
                           return (
                             <p key={index} className="text-base leading-relaxed">
                               {cleanText || line}

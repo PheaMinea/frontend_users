@@ -276,7 +276,7 @@ const AiAssistant = () => {
         },
       ]);
     }
-  }, [isKhmer]);
+  }, [initialGreeting, messages.length]);
 
   useEffect(() => {
     if (isOpen) {

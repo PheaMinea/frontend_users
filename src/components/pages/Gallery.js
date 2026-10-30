@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import {
   FiX,
@@ -82,11 +82,7 @@ const Gallery = () => {
   // =====================================================
   // FETCH GALLERY
   // =====================================================
-  useEffect(() => {
-    fetchImages();
-  }, []);
-
-  const fetchImages = async () => {
+  const fetchImages = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.get("/api/gallery/");
@@ -110,7 +106,11 @@ const Gallery = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchImages();
+  }, [fetchImages]);
 
   // =====================================================
   // IMAGE URL
@@ -125,10 +125,10 @@ const Gallery = () => {
   // =====================================================
   // FILTER
   // =====================================================
-  const getFilteredImages = () => {
+  const getFilteredImages = useCallback(() => {
     if (activeCategory === "All") return images;
     return images.filter((image) => getCategoryKey(image) === activeCategory);
-  };
+  }, [activeCategory, images]);
 
   const filteredImages = getFilteredImages();
 
@@ -144,21 +144,21 @@ const Gallery = () => {
   // =====================================================
   // CLOSE LIGHTBOX
   // =====================================================
-  const closeLightbox = () => {
+  const closeLightbox = useCallback(() => {
     setSelectedImage(null);
     document.body.style.overflow = "auto";
-  };
+  }, []);
 
   // =====================================================
   // NEXT / PREVIOUS
   // =====================================================
-  const navigateImage = (direction) => {
+  const navigateImage = useCallback((direction) => {
     const filtered = getFilteredImages();
     if (filtered.length === 0) return;
     const newIndex = (currentIndex + direction + filtered.length) % filtered.length;
     setCurrentIndex(newIndex);
     setSelectedImage(filtered[newIndex]);
-  };
+  }, [currentIndex, getFilteredImages]);
 
   // =====================================================
   // CATEGORY CHANGE
@@ -183,7 +183,7 @@ const Gallery = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedImage, currentIndex, activeCategory]);
+  }, [selectedImage, closeLightbox, navigateImage]);
 
   // =====================================================
   // CLEAN BODY OVERFLOW
