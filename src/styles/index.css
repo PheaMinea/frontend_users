@@ -425,6 +425,10 @@ html[data-theme="dark"] {
   color-scheme: dark;
 }
 
+html.light {
+  color-scheme: light;
+}
+
 html.dark body {
   background-color: #070D1F;
   color: #e2e8f0;

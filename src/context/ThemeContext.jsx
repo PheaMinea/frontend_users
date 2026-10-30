@@ -11,12 +11,6 @@ export const ThemeProvider = ({ children }) => {
       if (savedTheme === "dark" || savedTheme === "light") {
         return savedTheme;
       }
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        return "dark";
-      }
     } catch (e) {
       console.warn("Unable to access localStorage for theme preference:", e);
     }
