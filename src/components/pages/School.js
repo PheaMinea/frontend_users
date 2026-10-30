@@ -121,15 +121,6 @@ const School = () => {
     fetchData();
   }, []);
 
-  // ==========================================================
-  // ABOUT CONTENT
-  // ==========================================================
-  const getAboutContent = (field, translationKey, englishFallback, khmerFallback) => {
-    const databaseValue = localized(about, field);
-    if (databaseValue && String(databaseValue).trim() !== "") return databaseValue;
-    return tr(translationKey, englishFallback, khmerFallback);
-  };
-
   const storyParagraph1 = tr(
     "about.storyP1",
     "SC Academy is a technology training center that provides practical, industry-relevant education.",
@@ -478,8 +469,6 @@ const School = () => {
                       "description",
                       ""
                     );
-                    const rawTag = localized(school, "tag", "");
-                    const schoolTag = rawTag ? rawTag.replace(/-/g, " ") : "";
                     const schoolAddress = localized(
                       school,
                       "address",

@@ -1,5 +1,5 @@
 // Home.jsx - MODERN, MINIMAL & HIGH-PERFORMANCE HOMEPAGE FOR SC ACADEMY
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
@@ -7,7 +7,6 @@ import {
   FiArrowRight,
   FiChevronLeft,
   FiChevronRight,
-  FiBookOpen,
   FiAward,
   
   
@@ -42,29 +41,11 @@ import {
   FaLock,
   FaMobileAlt,
   FaChartPie,
-  FaUserGraduate,
-  FaLaptopCode,
   FaGlobe,
   FaBriefcase,
   FaPaintBrush,
   FaVideo,
-  FaGraduationCap,
-  FaAward,
-  FaChalkboardTeacher,
-  FaCertificate,
-  FaUniversity,
-  FaBrain,
-  FaLightbulb,
-  FaBookReader,
-  FaAtom,
   FaTerminal,
-  FaSchool,
-  FaBook,
-  FaMedal,
-  FaTrophy,
-  FaFlask,
-  FaPencilAlt,
-  FaCalculator,
   FaRobot,
   FaDatabase,
   FaProjectDiagram,
@@ -82,87 +63,6 @@ import { useLanguage } from "../../context/LanguageContext";
 import scacademy from "../pages/Scacademy.jpg";
 import { getImageUrl } from "../../utils/helpers";
 
-// =====================================================
-// COUNT-UP ANIMATION (RELIABLE & SMOOTH)
-// =====================================================
-const CountUp = ({ end, duration = 1400, suffix = "+", prefix = "" }) => {
-  const [count, setCount] = useState(end);
-  const counterRef = useRef(null);
-  const animationRef = useRef(null);
-  const animatedRef = useRef(false);
-
-  useEffect(() => {
-    if (animatedRef.current) return;
-
-    const element = counterRef.current;
-    if (!element) return;
-
-    const startAnimate = () => {
-      if (animatedRef.current) return;
-      animatedRef.current = true;
-      let startTime = null;
-
-      const step = (timestamp) => {
-        if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        // Smooth cubic-out easing
-        const easeOut = 1 - Math.pow(1 - progress, 3);
-        setCount(Math.floor(end * easeOut));
-
-        if (progress < 1) {
-          animationRef.current = requestAnimationFrame(step);
-        } else {
-          setCount(end);
-        }
-      };
-
-      setCount(0);
-      animationRef.current = requestAnimationFrame(step);
-    };
-
-    if (typeof window !== "undefined" && "IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              startAnimate();
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-      observer.observe(element);
-
-      const rect = element.getBoundingClientRect();
-      if (rect.top < window.innerHeight && rect.bottom > 0) {
-        startAnimate();
-      }
-
-      return () => {
-        observer.disconnect();
-        if (animationRef.current) cancelAnimationFrame(animationRef.current);
-      };
-    } else {
-      startAnimate();
-    }
-
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, [end, duration]);
-
-  return (
-    <span ref={counterRef} className="inline-block tabular-nums font-extrabold tracking-tight">
-      {prefix}
-      {count.toLocaleString()}
-      {suffix}
-    </span>
-  );
-};
-
 // In-memory flag: resets on browser Page Refresh (F5), persists during client-side route clicks
 let hasInitiallyLoadedHome = false;
 
@@ -174,9 +74,7 @@ const Home = () => {
   const [schools, setSchools] = useState([]);
   const [courses, setCourses] = useState([]);
   const [galleryImages, setGalleryImages] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [preloaderDone, setPreloaderDone] = useState(() => hasInitiallyLoadedHome);
-  const [activeCategory, setActiveCategory] = useState("web");
   const [activeFaq, setActiveFaq] = useState(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
@@ -186,7 +84,6 @@ const Home = () => {
   }, []);
 
   const schoolScrollRef = useRef(null);
-  const galleryScrollRef = useRef(null);
   const { language, t } = useLanguage();
   const isKhmer = language === "km";
 
@@ -246,7 +143,6 @@ const Home = () => {
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
-        setLoading(true);
         const [schoolsRes, coursesRes, galleryRes] = await Promise.allSettled([
           api.get("/api/schools/").catch(() => api.get("/schools/")),
           api.get("/api/courses/").catch(() => api.get("/courses/")),
@@ -271,22 +167,11 @@ const Home = () => {
         console.error("Error fetching homepage data:", err);
         setCourses([]);
         setGalleryImages([]);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchHomeData();
   }, []);
-
-  // Filtered courses
-  const filteredCourses = useMemo(() => {
-    if (activeCategory === "all") return courses;
-    return courses.filter((course) => {
-      const cat = (course.category || course.level || course.title || "").toLowerCase();
-      return cat.includes(activeCategory);
-    });
-  }, [courses, activeCategory]);
 
   const scrollSchools = (direction) => {
     const container = schoolScrollRef.current;
@@ -294,15 +179,6 @@ const Home = () => {
     const cardWidth = 300;
     container.scrollBy({
       left: direction === "next" ? cardWidth + 20 : -(cardWidth + 20),
-      behavior: "smooth" });
-  };
-
-  const scrollGallery = (direction) => {
-    const container = galleryScrollRef.current;
-    if (!container) return;
-    const cardWidth = 300;
-    container.scrollBy({
-      left: direction === "next" ? cardWidth + 24 : -(cardWidth + 24),
       behavior: "smooth" });
   };
 
